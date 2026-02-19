@@ -1,0 +1,14 @@
+# Ambientes virtuais
+venv/
+env/
+
+# Arquivos temporários do Python
+__pycache__/
+*.py[cod]
+
+# PDFs de teste (para não ocupar espaço no repo)
+*.pdf
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
