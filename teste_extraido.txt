@@ -1,5 +1,0 @@
---- Página 2 ---
-● Emite alertas quando a renda não cobre o mínimo necessário ● Auxilia o usuário a decidir o que deve ser priorizado em situações críticas Dessa forma, o aplicativo não apenas organiza informações, mas apoia a tomada de decisão financeira .
- 4. Funcionamento Geral da Ideia 4.1 Cadastro Inicial O usuário informa: ● Tipo de renda (fixa, variável ou mista) ● Valor da renda mensal ● Gastos fixos essenciais Com base nesses dados, o aplicativo gera uma estimativa inicial do custo de sobrevivência. 4.2 Controle Mensal A cada mês, o usuário pode: ● Registrar sua renda ● Registrar seus gastos ● Visualizar um gráfico onde a renda representa 100% do orçamento mensal Conforme os gastos são inseridos, o gráfico é atualizado, mostrando o impacto direto no orçamento. 4.3 Modo Sobrevivência Quando a renda mensal fica abaixo do custo de sobrevivência, o aplicativo ativa o Modo Sobrevivência , que:
- ● Prioriza gastos essenciais
-
