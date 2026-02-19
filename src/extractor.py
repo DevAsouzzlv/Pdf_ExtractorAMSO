@@ -1,48 +1,62 @@
 from pypdf import PdfReader
+import re
 
 def extrair_texto_pdf(caminho_pdf, lista_paginas=None):
     try:
-        # Tentamos abrir o arquivo
         leitor = PdfReader(caminho_pdf)
         
-        # Requisito 3: Verificar se o PDF está criptografado (com senha)
         if leitor.is_encrypted:
-            return "Erro: O arquivo PDF está protegido por senha e não pode ser lido."
+            return "Erro: O arquivo PDF está protegido por senha."
 
         texto_completo = ""
         
+        # Lógica de seleção de páginas restaurada
         if lista_paginas is None:
             paginas_para_ler = range(len(leitor.pages))
         else:
+            # Converte para índice zero (página 1 vira 0)
             paginas_para_ler = [p - 1 for p in lista_paginas]
 
         for indice in paginas_para_ler:
             if 0 <= indice < len(leitor.pages):
                 texto_completo += f"--- Página {indice + 1} ---\n"
-                texto_completo += leitor.pages[indice].extract_text() + "\n"
+                texto_extraido = leitor.pages[indice].extract_text()
+                
+                if texto_extraido:
+                    # Limpeza inteligente: remove quebras de linha no meio de frases
+                    # mas mantém onde há pontuação ou tópicos
+                    texto_limpo = re.sub(r'(?<![.!?:●])\n', ' ', texto_extraido)
+                    texto_limpo = re.sub(r' +', ' ', texto_limpo)
+                    
+                    texto_completo += texto_limpo.strip() + "\n\n"
             else:
-                print(f"Aviso: A página {indice + 1} não existe no arquivo.")
+                print(f"Aviso: A página {indice + 1} não existe.")
 
+        # Geração do arquivo .txt
+        nome_txt = caminho_pdf.replace(".pdf", "_extraido.txt")
+        with open(nome_txt, "w", encoding="utf-8") as arquivo_txt:
+            arquivo_txt.write(texto_completo)
+        
+        print(f"\n✅ Sucesso! Arquivo salvo como: {nome_txt}")
         return texto_completo
 
-    except FileNotFoundError:
-        # Requisito 3: Tratamento de arquivo inexistente
-        return "Erro: O arquivo não foi encontrado. Verifique o caminho digitado."
     except Exception as e:
-        # Captura qualquer outro erro inesperado
-        return f"Erro inesperado ao ler o PDF: {e}"
-    
+        return f"Erro inesperado: {e}"
+
 if __name__ == "__main__":
-    # --- TESTE 1: Arquivo que existe ---
-    print("--- Teste 1: Arquivo Real ---")
-    caminho_real = "seu_arquivo.pdf" # Coloque um nome de arquivo que existe
-    print(extrair_texto_pdf(caminho_real, [1]))
+    print("--- DocuMaster PDF Extractor (Versão Full) ---")
+    arquivo_usuario = input("Digite o nome do arquivo PDF (ex: teste.pdf): ")
+    
+    # Interface de escolha restaurada
+    opcao = input("Deseja ler (1) Tudo ou (2) Páginas específicas? ")
 
-    # --- TESTE 2: Arquivo que NÃO existe (Requisito 3) ---
-    print("\n--- Teste 2: Arquivo Inexistente ---")
-    caminho_fantasma = "arquivo_que_nao_existe.pdf"
-    print(extrair_texto_pdf(caminho_fantasma))
+    if opcao == "2":
+        entrada_paginas = input("Digite as páginas separadas por vírgula (ex: 1,3): ")
+        # Transforma "1,3" em [1, 3]
+        lista = [int(p.strip()) for p in entrada_paginas.split(",")]
+        resultado = extrair_texto_pdf(arquivo_usuario, lista)
+    else:
+        resultado = extrair_texto_pdf(arquivo_usuario)
 
-    # --- TESTE 3: Página fora do intervalo (Requisito 3) ---
-    print("\n--- Teste 3: Página Inexistente ---")
-    print(extrair_texto_pdf(caminho_real, [999]))
+    print("\n--- Conteúdo Extraído ---")
+    print(resultado)
