@@ -2,7 +2,6 @@ from pypdf import PdfReader
 import re
 import os
 import platform
-import sys
 
 def limpar_terminal():
     if platform.system() == "Windows":
@@ -13,75 +12,80 @@ def limpar_terminal():
 def exibir_banner():
     limpar_terminal()
     print("=" * 50)
-    print("       DOCUMASTER PDF EXTRACTOR v1.1.0 📄🚀")
+    print("       DOCUMASTER PDF EXTRACTOR v1.2.0 📄🚀")
     print("=" * 50)
     print()
 
 def extrair_texto_pdf(caminho_pdf, lista_paginas=None):
     try:
-        if not os.path.exists(caminho_pdf):
-            return f"❌ Erro: O arquivo '{caminho_pdf}' não foi encontrado na pasta."
-
         leitor = PdfReader(caminho_pdf)
+        total_paginas = len(leitor.pages)
         
-        if leitor.is_encrypted:
-            return "❌ Erro: O arquivo PDF está protegido por senha."
-
         texto_completo = ""
-        paginas_para_ler = range(len(leitor.pages)) if lista_paginas is None else [p - 1 for p in lista_paginas]
+        
+        # Define quais páginas serão lidas
+        if lista_paginas is None:
+            paginas_para_ler = range(total_paginas)
+        else:
+            # Filtra apenas páginas que existem para evitar erro de índice
+            paginas_para_ler = [p - 1 for p in lista_paginas if 0 < p <= total_paginas]
 
         for indice in paginas_para_ler:
-            if 0 <= indice < len(leitor.pages):
-                texto_extraido = leitor.pages[indice].extract_text()
-                if texto_extraido:
-                    texto_limpo = re.sub(r'(?<![.!?:●])\n', ' ', texto_extraido)
-                    texto_limpo = re.sub(r' +', ' ', texto_limpo)
-                    texto_completo += f"--- Página {indice + 1} ---\n{texto_limpo.strip()}\n\n"
-            else:
-                print(f"⚠️ Aviso: A página {indice + 1} não existe.")
-
-        nome_txt = caminho_pdf.replace(".pdf", "_extraido.txt")
-        with open(nome_txt, "w", encoding="utf-8") as f:
-            f.write(texto_completo)
+            texto_extraido = leitor.pages[indice].extract_text()
+            if texto_extraido:
+                # Limpeza Regex
+                texto_limpo = re.sub(r'(?<![.!?:●])\n', ' ', texto_extraido)
+                texto_limpo = re.sub(r' +', ' ', texto_limpo)
+                texto_completo += f"--- Página {indice + 1} ---\n{texto_limpo.strip()}\n\n"
         
-        return texto_completo
+        return texto_completo, total_paginas
 
     except Exception as e:
-        return f"❌ Erro na extração: {e}"
+        return f"❌ Erro: {e}", 0
 
 if __name__ == "__main__":
-    try:
-        exibir_banner()
-        arquivo_usuario = input("📂 Digite o nome do arquivo PDF (ex: teste.pdf): ").strip()
+    exibir_banner()
+    arquivo_usuario = input("📂 Digite o nome do arquivo PDF: ").strip()
+    
+    if not os.path.exists(arquivo_usuario):
+        print(f"❌ Erro: O arquivo '{arquivo_usuario}' não foi encontrado.")
+    else:
+        # Primeiro, pegamos o total de páginas para informar o usuário
+        leitor_temp = PdfReader(arquivo_usuario)
+        total_de_paginas = len(leitor_temp.pages)
         
-        if not arquivo_usuario:
-            print("Você não digitou o nome do arquivo!")
-            sys.exit()
-
-        print("\nEscolha uma opção:")
+        exibir_banner()
+        print(f"📄 Arquivo: {arquivo_usuario}")
+        print(f"📊 Total de páginas: {total_de_paginas}")
+        print("-" * 30)
+        print("Escolha uma opção:")
         print("(1) Extrair Tudo")
-        print("(2) Páginas específicas")
+        print("(2) Escolher páginas específicas")
         opcao = input("\n👉 Opção: ")
 
+        resultado = ""
         if opcao == "2":
-            entrada = input("\n🔢 Digite as páginas (ex: 1,3): ")
+            entrada = input(f"🔢 Digite as páginas entre 1 e {total_de_paginas} (ex: 1,3): ")
             lista = [int(p.strip()) for p in entrada.split(",")]
-            resultado = extrair_texto_pdf(arquivo_usuario, lista)
+            resultado, _ = extrair_texto_pdf(arquivo_usuario, lista)
         else:
-            resultado = extrair_texto_pdf(arquivo_usuario)
+            resultado, _ = extrair_texto_pdf(arquivo_usuario)
 
-        # Só limpa para mostrar o resultado se não for erro
-        if "Erro" not in resultado:
-            input("\n✅ Processo concluído! Pressione Enter para ver o texto...")
-            exibir_banner()
-            print(resultado)
+        # Exibe o resultado no terminal
+        exibir_banner()
+        print("--- 📝 CONTEÚDO EXTRAÍDO ---")
+        print(resultado)
+        print("-" * 50)
+
+        # Pergunta se deseja salvar o .txt
+        decisao = input("\n💾 Deseja salvar este conteúdo em um arquivo .txt? (s/n): ").lower()
+
+        if decisao == 's':
+            nome_txt = arquivo_usuario.replace(".pdf", "_extraido.txt")
+            with open(nome_txt, "w", encoding="utf-8") as f:
+                f.write(resultado)
+            print(f"✨ Sucesso! Arquivo '{nome_txt}' gerado.")
         else:
-            print("\n" + resultado)
-            
-        input("\n🏁 Fim do programa. Pressione Enter para fechar...")
+            print("🚫 O arquivo .txt não foi criado.")
 
-    except KeyboardInterrupt:
-        print("\n\nPrograma encerrado pelo usuário.")
-    except Exception as e:
-        print(f"\nERRO CRÍTICO NO SISTEMA: {e}")
-        input("\nPressione Enter para sair...")
+    input("\n🏁 Pressione Enter para fechar...")
