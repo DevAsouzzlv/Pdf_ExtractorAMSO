@@ -1,0 +1,12 @@
+--- Página 1 ---
+DOCUMENTAÇÃO COMPLETA DO PROJETO DREF — Dinâmica de Renda e Fluxo 1. Apresentação da Ideia O DREF (Dinâmica de Renda e Fluxo) é uma ideia de aplicativo mobile voltado ao controle financeiro pessoal, com foco em pessoas que possuem renda variável, como freelancers, autônomos e trabalhadores informais.
+ A proposta central do DREF é ir além do simples registro de gastos e receitas, oferecendo ao usuário uma visão clara sobre quanto ele precisa para sobreviver, qual é o seu risco financeiro real e como priorizar seus gastos em meses de renda baixa.
+ 2. Problema Identificado A maioria dos aplicativos de controle financeiro funciona como uma planilha digital, limitando-se a organizar entradas e saídas de dinheiro.
+ Esse modelo é pouco eficiente para pessoas com renda variável, pois não considera:
+ ● Instabilidade mensal de renda ● Necessidade de priorização em meses ruins ● Risco real de colapso financeiro ● Diferença entre custo de vida e custo de sobrevivência Como resultado, muitos usuários continuam tomando decisões financeiras ruins mesmo utilizando esses aplicativos.
+ 3. Proposta de Solução O DREF propõe um sistema de controle financeiro que: ● Analisa a renda ao longo do tempo ● Calcula automaticamente o custo de sobrevivência do usuário ● Diferencia gastos essenciais e não essenciais
+
+--- Página 3 ---
+● Sinaliza quais despesas devem ser evitadas ● Ajuda o usuário a tomar decisões mais seguras 5. Diferenciais da Ideia ● Foco em usuários com renda variável ● Cálculo automático do custo de sobrevivência ● Análise de risco financeiro ● Apoio à tomada de decisão ● Funcionamento offline ● Interface voltada para conscientização financeira ● 6. Público-Alvo ● Freelancers ● Autônomos ● Trabalhadores informais ● Pessoas com renda mista ● Usuários que desejam maior controle financeiro 7. Considerações Finais A ideia do DREF apresenta uma abordagem diferenciada para controle financeiro pessoal, focada não apenas na organização de dados, mas na compreensão da realidade financeira do usuário .
+ Ao considerar riscos, instabilidade de renda e priorização de gastos, o aplicativo tem potencial para auxiliar usuários a desenvolverem um comportamento financeiro mais consciente e responsável.
+
